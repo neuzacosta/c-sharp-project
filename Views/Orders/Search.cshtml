@@ -1,0 +1,152 @@
+﻿@model List<AuthSystem.Models.Order>
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+@using Microsoft.AspNetCore.Identity
+@using AuthSystem.Areas.Identity.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DJEN S.A.</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AuthSystem.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/x-icon" href="/img/logo.ico">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a class="navbar-brand bg-primary d-flex align-items-center px-4 px-lg-5" asp-area="" asp-controller="Home" asp-action="Index">
+            <h2 class="mb-2 text-white">DJEN</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <!-- Display these links for authenticated users -->
+                <a class="nav-item nav-link" asp-area="" asp-controller="Orders" asp-action="Create">Create Order</a>
+                <a class="nav-item nav-link" asp-area="" asp-controller="Orders" asp-action="Index">List Order</a>
+                <a class="nav-item nav-link" asp-area="" asp-controller="Orders" asp-action="Search">Search Order</a>
+                <a id="manage" class="nav-item nav-link" asp-area="" asp-page="" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <form id="logoutForm" class="nav-item nav-link" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button id="logout" type="submit" class="nav-link btn btn-link text-black border-0">Logout</button>
+                </form>
+            </div>
+            <h4 class="m-0 pe-lg-5 d-none d-lg-block"><i class="fa fa-headphones text-primary me-3"></i>+351 211 000 222</h4>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+    <header class="classic">
+        <h2 style="align-self:center">Search Order</h2>
+    </header>
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            <form method="post" asp-controller="Orders" asp-action="Search">
+                <div class="form-group">
+                    <label class="control-label">Search by Order ID or Zip Code:</label>
+                    <input name="model" class="form-control"/>
+                </div>
+                <br />
+                <div class="form-group">
+                    <button type="submit" class=" w-100 btn btn-lg btn-primary">Search</button>
+                </div>
+            </form>
+            <br />
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+        @if (Model != null)
+        {
+            @if (Model.Any())
+            {
+                <h3>Search Results:</h3>
+                <table class="table" style="col-md-9">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Nome Destinatario</th>
+                            <th>Morada Destinatario</th>
+                            <th>Codigo Postal</th>
+                            <th>Contacto</th>
+                            <th>Data Pedido</th>
+                            <th>Prioridade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>@order.Id</td>
+                                <td>@order.NomeDestinatario</td>
+                                <td>@order.MoradaDestinatario</td>
+                                <td>@order.CodigoPostal</td>
+                                <td>@order.Contacto</td>
+                                <td>@order.DataPedido</td>
+                                <td>@order.Prioridade</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No results found.</p>
+            }
+        }
+
+        @if (!string.IsNullOrEmpty(ViewBag.Query))
+        {
+            <div class="query-display">
+                <h3>Query:</h3>
+                <pre>@ViewBag.Query</pre>
+            </div>
+        }    
+        </div>
+    </div>
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>

@@ -1,0 +1,162 @@
+﻿@model IEnumerable<AuthSystem.Models.Order>
+
+@{
+    ViewData["Title"] = "Order List";    
+}
+
+@using Microsoft.AspNetCore.Identity
+@using AuthSystem.Areas.Identity.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DJEN S.A.</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AuthSystem.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/x-icon" href="/img/logo.ico">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a class="navbar-brand bg-primary d-flex align-items-center px-4 px-lg-5" asp-area="" asp-controller="Home" asp-action="Index">
+            <h2 class="mb-2 text-white">DJEN</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <!-- Display these links for authenticated users -->
+                <a class="nav-item nav-link" asp-area="" asp-controller="Orders" asp-action="Create">Create Order</a>
+                <a class="nav-item nav-link" asp-area="" asp-controller="Orders" asp-action="Index">List Order</a>
+                <a class="nav-item nav-link" asp-area="" asp-controller="Orders" asp-action="Search">Search Order</a>
+                <a id="manage" class="nav-item nav-link" asp-area="" asp-page="" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <form id="logoutForm" class="nav-item nav-link" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button id="logout" type="submit" class="nav-link btn btn-link text-black border-0">Logout</button>
+                </form>
+            </div>
+            <h4 class="m-0 pe-lg-5 d-none d-lg-block"><i class="fa fa-headphones text-primary me-3"></i>+351 211 000 222</h4>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+    <header class="classic">
+        <h2 style="align-self:center">Order List</h2>
+    </header>
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+        <div id="PrintPDF">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NomeDestinatario)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MoradaDestinatario)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CodigoPostal)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Contacto)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DataPedido)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Prioridade)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NomeDestinatario)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MoradaDestinatario)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CodigoPostal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Contacto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataPedido)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Prioridade)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        </div>
+        <br />
+        @using (Html.BeginForm("Export", "Home", FormMethod.Post))
+        {
+            <input type="hidden" name="ExportData" />
+            <input type="submit" id="btnSubmit" class="btn btn-primary" value="Export" />
+        }
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $("#btnSubmit").click(function () {
+                    $("input[name='ExportData']").val($("#PrintPDF").html());
+                });
+            });
+        </script>
+    </div>
+</div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
