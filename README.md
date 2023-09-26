@@ -1,10 +1,10 @@
  
 ## Check List
 - [x] Authentication system
-- [x] Add CSS template
-- [x] Create an Order.cs class with CRUD options
+- [x] CSS template
+- [x] Added an Order.cs class with CRUD options
 - [x] Create and Download PDF file
-- [x] Create Search Order option
+- [x] Search Order option
 
 ## Documentation
 * [Authentication tutorial](https://www.youtube.com/watch?v=wzaoQiS_9dI&t=1189s&ab_channel=CodAffection)
